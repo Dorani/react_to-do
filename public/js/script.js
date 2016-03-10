@@ -13,13 +13,17 @@ const App = React.createClass({
     })
   },
   addTask:function( newTask ) {
-    // generate a new timestamp so that we have a unique id for each task
-    var timestamp = (new Date()).getTime();
+    console.log("insideaddTask event handler");
+    var updateData = (data)=>{
+      var newID = data.task_id;
+      // add new task to state
+      this.state.tasks[newID] = newTask;
+      this.setState({ tasks: this.state.tasks });
+      console.log("inside updatedata event handler");
+    }
 
-    // add new task to state
-    this.state.tasks['task-'+ timestamp] = newTask;
-
-    this.setState({ tasks: this.state.tasks });
+    $.post('/tasks', newTask)
+    .done(updateData);    
 
   },
   toggleTask:function(key){
@@ -91,7 +95,6 @@ const CreateTaskForm = React.createClass({
     event.preventDefault();
     var task = {
       name : this.refs.name.value,
-      completed:false,
       desc: this.refs.desc.value
     }
 
